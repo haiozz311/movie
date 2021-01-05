@@ -3,16 +3,8 @@ const { ScheduleListInfor } = require("../models/ListSchedule.modal");
 const { Theatre } = require("../models/MovieTheatre.modal");
 
 module.exports.createScheduleInfor = (req, res, next) => {
-  const {
-    listCumRap,
-    //danhSachPhim,
-    maHeThongRap,
-    tenHeThongRap,
-    logo,
-  } = req.body;
+  const { maHeThongRap, tenHeThongRap, logo } = req.body;
   return ScheduleListInfor.create({
-    listCumRap,
-    // danhSachPhim,
     maHeThongRap,
     tenHeThongRap,
     logo,
@@ -34,10 +26,12 @@ module.exports.getScheduleInfor = (req, res, next) => {
       .select({ maHeThongRap: 1, danhSachPhim: 1, tenHeThongRap: 1, logo: 1 })
       .populate({
         path: "listCumRap",
-        select: "_id tenCumRap DiaChi danhSachPhim ",
+        // select: "_id tenCumRap DiaChi danhSachPhim ",
         populate: {
           path: "danhSachPhim",
-          populate: "lstLichChieuTheoPhim",
+          populate: {
+            path: "lstLichChieuTheoPhim",
+          },
         },
       })
       .then((schedules) => {

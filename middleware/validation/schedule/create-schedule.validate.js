@@ -11,7 +11,7 @@ module.exports.validateCreateSchedule = async (req, res, next) => {
   const error = {};
 
   if (!maPhim) {
-    error.maPhim = "Email is maPhim";
+    error.maPhim = "maPhim is require";
   }
 
   if (!ngayChieuGioChieu) {
@@ -20,12 +20,7 @@ module.exports.validateCreateSchedule = async (req, res, next) => {
 
   if (!maRap) {
     error.maRap = "maRap is require";
-  } else {
-    const movie = await ScheduleList.findOne({ maRap });
-    const movie1 = await ScheduleList.findOne({ maPhim });
-    if (movie && movie1) error.maRap = "Phim này đã tồn tại";
   }
-
   if (!giaVe) {
     error.giaVe = "giaVe is require";
   }

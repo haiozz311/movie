@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const MovieSchema = mongoose.Schema({
-  lstLichChieuTheoPhim: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ScheduleList",
-  }, //đúngđúng
+  lstLichChieuTheoPhim: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ScheduleList",
+    },
+  ], //đúngđúng
   tenPhim: { type: String, required: true },
   biDanh: { type: String, required: true },
   trailer: { type: String, required: true },

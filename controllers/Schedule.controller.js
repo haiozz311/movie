@@ -10,7 +10,7 @@ router.post(
   "/schedule",
   authenticate,
   authorization(["QuanTri"]),
-  validateCreateSchedule,
+  // validateCreateSchedule,
   createSchedule
 );
 module.exports = router;
