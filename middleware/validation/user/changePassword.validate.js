@@ -3,19 +3,17 @@ const _ = require("lodash");
 const { User } = require("../../../models/User.modal");
 
 module.exports.validateChangePassword = async (req, res, next) => {
-  const email = req.body.email;
+  const taiKhoan = req.body.taiKhoan;
   const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
   const reNewPassword = req.body.reNewPassword;
   const error = {};
   //email
-  if (!email) {
-    error.email = "Email is required";
-  } else if (!validator.isEmail(email)) {
-    error.email = "Email is invalid";
+  if (!taiKhoan) {
+    error.taiKhoan = "taiKhoan is required";
   } else {
-    const user = await User.findOne({ email });
-    if (!user) error.email = "Email exists";
+    const user = await User.findOne({ taiKhoan });
+    if (!user) error.taiKhoan = "taiKhoan exists";
   }
 
   //password

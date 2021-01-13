@@ -3,6 +3,7 @@ const _ = require("lodash");
 const { User } = require("../../../models/User.modal");
 
 module.exports.validateAddUser = async (req, res, next) => {
+  const taiKhoan = req.body.taiKhoan;
   const email = req.body.email;
   const matKhau = req.body.matKhau;
   const soDt = req.body.soDt;
@@ -10,6 +11,14 @@ module.exports.validateAddUser = async (req, res, next) => {
   const maLoaiNguoiDung = req.body.maLoaiNguoiDung;
 
   const error = {};
+
+    //email
+    if (!taiKhoan) {
+      error.taiKhoan = "taiKhoan is required";
+    } else {
+      const user = await User.findOne({ taiKhoan });
+      if (user) error.taiKhoan = "taiKhoan exists";
+    }
   //email
   if (!email) {
     error.email = "Email is required";

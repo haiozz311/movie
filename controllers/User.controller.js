@@ -12,6 +12,8 @@ const {
   updateUser,
   deleteUser,
   searchUser,
+  getAccountInfor,
+  
 } = require("../services/User.service");
 const {
   validateCreateUser,
@@ -35,6 +37,7 @@ const router = express.Router();
 
 router.get("/user", authenticate, authorization(["QuanTri"]), searchUser);
 router.get("/me", authenticate, authorization(["KhachHang", "QuanTri"]), getMe);
+router.get("/accountInfor", getAccountInfor);
 router.post("/user", validateCreateUser, createUser);
 router.post(
   "/addUser",
@@ -47,7 +50,7 @@ router.post("/login", validateGetUser, login);
 router.post(
   "/upload-avatar",
   authenticate,
-  authorization(["KhachHang"]),
+  authorization(["QuanTri"]),
   uploadImages("hinhAnh"),
   uploadAvater
 );
@@ -59,5 +62,10 @@ router.get(
 );
 router.patch("/updatePassword", validateChangePassword, updatePassword);
 router.put("/updateUser/:id", authenticate, validateUpdateUser, updateUser);
-router.delete("/user/:id", deleteUser);
+router.delete(
+  "/user/:id",
+  authenticate,
+  authorization(["QuanTri"]),
+  deleteUser
+);
 module.exports = router;

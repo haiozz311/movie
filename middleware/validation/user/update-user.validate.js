@@ -7,13 +7,14 @@ module.exports.validateUpdateUser = async (req, res, next) => {
   const soDt = req.body.soDt;
   const hoTen = req.body.hoTen;
   const error = {};
+
   if (!email) {
     error.email = "Email is required";
   } else if (!validator.isEmail(email)) {
     error.email = "Email is invalid";
   } else {
     const user = await User.findOne({ email });
-    if (user) error.email = "Email exists";
+    if (user !== email) error.email = "Email exists";
   }
   if (Object.keys(error).length > 0) {
     return res.status(400).json(error);

@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
-const InforScheduleSchema = mongoose.Schema({
+const SystemCinemaSchema = mongoose.Schema({
   listCumRap: [{ type: mongoose.Schema.Types.ObjectId, ref: "Theatre" }],
   maHeThongRap: { type: String, required: true },
   tenHeThongRap: { type: String, required: true },
+  biDanh: { type: String, required: true },
   logo: { type: String, required: true },
 });
 
-const ScheduleListInfor = mongoose.model(
-  "ScheduleListInfor",
-  InforScheduleSchema,
-  "ScheduleListInfor"
+const SystemCenima = mongoose.model(
+  "SystemCenima",
+  SystemCinemaSchema,
+  "SystemCenima"
 );
 module.exports = {
-  InforScheduleSchema,
-  ScheduleListInfor,
+  SystemCinemaSchema,
+  SystemCenima,
 };

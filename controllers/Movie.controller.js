@@ -6,6 +6,8 @@ const {
   movieByDate,
   updateMovie,
   deleteMovieById,
+  getInforSchedule,
+  getMovieInfor,
 } = require("../services/Movie.service");
 const {
   validateAddMovie,
@@ -16,9 +18,11 @@ const {
 const router = express.Router();
 
 router.get("/movies", getMovie);
+router.get("/movieInfor/:id", getMovieInfor);
 router.post("/movies", validateAddMovie, createMovie);
 router.get("/moviesPagination", paginationMovie);
 router.get("/movieByDate", movieByDate);
 router.put("/:id", validateUpdateMovie, updateMovie);
 router.delete("/:id", deleteMovieById);
+router.get("/getInforSchedule", getInforSchedule);
 module.exports = router; //  export default xuat ra ca 1 router

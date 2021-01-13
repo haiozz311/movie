@@ -1,71 +1,31 @@
-const { Schema } = require("mongoose");
-const { Cinema } = require("../models/ListCinema.modal");
+const { CinemaList } = require("../models/Cinema.modal");
+const { Theatre } = require("../models/MovieTheatre.modal");
+module.exports.createCinema = (req, res, next) => {
+  const { tenRap, theatreId } = req.body;
+  const newCinema = new CinemaList({
+    tenRap,
+  });
+  Theatre.findById(theatreId)
+    .then((theatre) => {
+      if (!theatre)
+        return Promise.reject({
+          status: 404,
+          message: "Theatre not found",
+        });
+      theatre.DanhSachRap.push(newCinema);
 
-// hiển thị rap
-module.exports.getCinema = (req, res, next) => {
-  return Cinema.find()
-    .then((cinemas) => {
-      return res.status(200).json(cinemas);
+      return Promise.all([newCinema.save(), theatre.save()]);
     })
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+    .then((result) => res.status(200).json(result[0]))
+    .catch((err) => res.status(500).json(err));
 };
 
-// thêm rạp
-module.exports.createCinema = (req, res, next) => {
-  const { tenHeThongRap, biDanh, logo } = req.body;
-  return Cinema.create({
-    tenHeThongRap,
-    biDanh,
-    logo,
-  })
+module.exports.getCinema = (req, res, next) => {
+  return CinemaList.find()
     .then((cinema) => {
       return res.status(200).json(cinema);
     })
     .catch((err) => {
       return res.status(500).json(err);
     });
-};
-
-//update rạp by id
-
-module.exports.updateCinemaById = (req, res, next) => {
-  const { id } = req.params;
-  const { tenHeThongRap, biDanh, logo } = req.body;
-  Cinema.findById(id)
-    .then((cinema) => {
-      if (!cinema) {
-        return Promise.reject({ status: 404, message: "Cinema not found" });
-      }
-      cinema.tenHeThongRap = tenHeThongRap;
-      cinema.biDanh = biDanh;
-      cinema.logo = logo;
-      return cinema.save();
-    })
-    .then((cinema) => res.status(200).json(cinema))
-    .catch((err) => {
-      if (!err.status) return res.status(500).json(err);
-      return res.status(err.status).json({ message: err.message });
-    });
-};
-
-//delete by id
-
-module.exports.deleteCinemaById = (req, res, next) => {
-  const { id } = req.params;
-  let _cinema;
-  Cinema.findById(id)
-    .then((cinema) => {
-      if (!cinema) {
-        return Promise.reject({
-          status: 404,
-          message: "Cinema Not Found",
-        });
-      }
-      _cinema = cinema;
-      return cinema.deleteOne();
-    })
-    .then(() => res.status(200).json({ message: "delete successfully" }))
-    .catch((err) => res.status(500).json({ message: err.message }));
 };

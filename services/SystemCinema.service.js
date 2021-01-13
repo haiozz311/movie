@@ -1,32 +1,38 @@
 const { Schema } = require("mongoose");
-const { ScheduleListInfor } = require("../models/ListSchedule.modal");
+const { SystemCenima } = require("../models/SystemCinema.modal");
 const { Theatre } = require("../models/MovieTheatre.modal");
 
-module.exports.createScheduleInfor = (req, res, next) => {
-  const { maHeThongRap, tenHeThongRap, logo } = req.body;
-  return ScheduleListInfor.create({
+module.exports.createSystemCinema = (req, res, next) => {
+  const { maHeThongRap, tenHeThongRap, biDanh, logo } = req.body;
+  return SystemCenima.create({
     maHeThongRap,
     tenHeThongRap,
+    biDanh,
     logo,
   })
-    .then((scheduleListInfor) => {
-      console.log(scheduleListInfor);
-      return res.status(200).json(scheduleListInfor);
+    .then((SystemCenima) => {
+      console.log(SystemCenima);
+      return res.status(200).json(SystemCenima);
     })
     .catch((err) => {
       return res.status(500).json(err);
     });
 };
 
-module.exports.getScheduleInfor = (req, res, next) => {
+module.exports.getSystemCinema = (req, res, next) => {
   const maHeThongRap = req.query.maHeThongRap;
   console.log("maHeThongRap", maHeThongRap);
   if (maHeThongRap) {
-    return ScheduleListInfor.find({ maHeThongRap })
-      .select({ maHeThongRap: 1, danhSachPhim: 1, tenHeThongRap: 1, logo: 1 })
+    return SystemCenima.find({ maHeThongRap })
+      .select({
+        maHeThongRap: 1,
+        danhSachPhim: 1,
+        biDanh: 1,
+        tenHeThongRap: 1,
+        logo: 1,
+      })
       .populate({
         path: "listCumRap",
-        // select: "_id tenCumRap DiaChi danhSachPhim ",
         populate: {
           path: "danhSachPhim",
           populate: {
@@ -41,12 +47,19 @@ module.exports.getScheduleInfor = (req, res, next) => {
         return res.status(500).json(err);
       });
   } else {
-    return ScheduleListInfor.find()
-      .select({ maHeThongRap: 1, tenHeThongRap: 1, logo: 1 })
+    return SystemCenima.find()
+      .select({ maHeThongRap: 1, tenHeThongRap: 1, biDanh: 1, logo: 1 })
       .populate({
         path: "listCumRap",
-        select: "_id tenCumRap DiaChi danhSachPhim",
-        populate: { path: "danhSachPhim" },
+        populate: {
+          path: "danhSachPhim",
+          populate: {
+            path: "lstLichChieuTheoPhim",
+            // populate: {
+            //   path: "maRap",
+            // },
+          },
+        },
       })
       .then((schedules) => {
         return res.status(200).json(schedules);

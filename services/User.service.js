@@ -7,8 +7,8 @@ const jwtSign = util.promisify(jwt.sign);
 const config = require("../config/index");
 const PAGE_SIZE = 2;
 module.exports.createUser = (req, res, next) => {
-  const { matKhau, email, soDt, hoTen } = req.body;
-  User.create({ matKhau, email, soDt, hoTen })
+  const { taiKhoan, matKhau, email, soDt, hoTen } = req.body;
+  User.create({ taiKhoan, matKhau, email, soDt, hoTen })
     .then((user) => {
       res.status(200).json(user);
     })
@@ -18,9 +18,9 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.login = (req, res, next) => {
-  const { email, matKhau } = req.body;
+  const { taiKhoan, matKhau } = req.body;
   let _user;
-  User.findOne({ email })
+  User.findOne({ taiKhoan })
     .then((user) => {
       if (!user)
         return Promise.reject({ status: 404, message: "User Not Found" });
@@ -35,6 +35,7 @@ module.exports.login = (req, res, next) => {
         });
       const payload = {
         _id: _user._id,
+        taiKhoan: _user.taiKhoan,
         email: _user.eamil,
         hoTen: _user.hoTen,
         soDt: _user.soDt,
@@ -51,9 +52,9 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.updatePassword = (req, res, next) => {
-  const { email, oldPassword, newPassword, reNewPassword } = req.body;
+  const { taiKhoan, oldPassword, newPassword, reNewPassword } = req.body;
   let _user;
-  User.findOne({ email })
+  User.findOne({ taiKhoan })
     .then((user) => {
       if (!user) {
         return Promise.reject({
@@ -135,9 +136,10 @@ module.exports.paginationUser = (req, res, next) => {
 };
 
 module.exports.AddUser = (req, res, next) => {
-  const { matKhau, email, soDt, hoTen, maLoaiNguoiDung } = req.body;
+  const { taiKhoan, matKhau, email, soDt, hoTen, maLoaiNguoiDung } = req.body;
 
   return User.create({
+    taiKhoan,
     matKhau,
     email,
     soDt,
@@ -152,16 +154,16 @@ module.exports.AddUser = (req, res, next) => {
     });
 };
 
-//update movie by id
 module.exports.updateUser = (req, res, next) => {
   const { id } = req.params;
   console.log("user", id);
-  const { email, soDt, hoTen } = req.body;
+  const { taiKhoan, email, soDt, hoTen } = req.body;
   User.findById(id)
     .then((user) => {
       if (!user) {
         return Promise.reject({ status: 404, message: "User Not Found" });
       }
+      user.taiKhoan = taiKhoan;
       user.email = email;
       user.soDt = soDt;
       user.hoTen = hoTen;
@@ -197,9 +199,6 @@ module.exports.deleteUser = (req, res, next) => {
 module.exports.searchUser = (req, res, next) => {
   var user = req.query.user;
   if (user) {
-    // model.findOne({name: new RegExp('^'+name+'$', "i")}, function(err, doc) {
-    //Do your action here..
-    // });
     console.log("user", user);
     User.find({
       hoTen: new RegExp(".*" + user + ".*", "i"),
@@ -219,4 +218,16 @@ module.exports.searchUser = (req, res, next) => {
         return res.status(500).json(err);
       });
   }
+};
+
+module.exports.getAccountInfor = (req, res, next) => {
+  const { taiKhoan } = req.query;
+  console.log("account", taiKhoan);
+  return User.find({ taiKhoan })
+    .then((users) => {
+      return res.status(200).json(users);
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
 };

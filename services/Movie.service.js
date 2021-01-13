@@ -5,40 +5,51 @@ const moment = require("moment");
 const PAGE_SIZE = 2;
 // hiển thị phim
 module.exports.getMovie = (req, res, next) => {
-  return Movie.find()
-    .populate("lstLichChieuTheoPhim")
-    .then((movies) => {
-      return res.status(200).json(movies);
-    })
-    .catch((err) => {
-      return res.status(500).json(err);
-    });
+  return (
+    Movie.find()
+      // .populate("lstLichChieuTheoPhim")
+      .populate({
+        path: "heThongRapChieu",
+        populate: {
+          path: "listCumRap", 
+        },
+      })
+      .then((movies) => {
+        return res.status(200).json(movies);
+      })
+      .catch((err) => {
+        return res.status(500).json(err);
+      })
+  );
 };
 
 // thêm phim
 module.exports.createMovie = (req, res, next) => {
   const {
     theatreId,
+    // lstLichChieuTheoPhim,
     tenPhim,
-    lstLichChieuTheoPhim,
     biDanh,
     trailer,
     hinhAnh,
     moTa,
     ngayKhoiChieu,
     danhGia,
+    heThongRapChieu,
   } = req.body;
   const newMovie = new Movie({
     tenPhim,
-    lstLichChieuTheoPhim,
+    // lstLichChieuTheoPhim,
     biDanh,
     trailer,
     hinhAnh,
     moTa,
     ngayKhoiChieu,
     danhGia,
+    heThongRapChieu,
   });
   Theatre.findById(theatreId)
+
     .then((theatre) => {
       if (!theatre)
         return Promise.reject({
@@ -52,6 +63,33 @@ module.exports.createMovie = (req, res, next) => {
     .then((result) => res.status(200).json(result[0]))
     .catch((err) => res.status(500).json(err));
 };
+
+// module.exports.createMovie = (req, res, next) => {
+//   const {
+//     tenPhim,
+//     biDanh,
+//     trailer,
+//     hinhAnh,
+//     moTa,
+//     ngayKhoiChieu,
+//     danhGia,
+//   } = req.body;
+//   return Movie.create({
+//     tenPhim,
+//     biDanh,
+//     trailer,
+//     hinhAnh,
+//     moTa,
+//     ngayKhoiChieu,
+//     danhGia,
+//   })
+//     .then((station) => {
+//       return res.status(200).json(station);
+//     })
+//     .catch((err) => {
+//       return res.status(500).json(err);
+//     });
+// };
 
 // pagination movie
 module.exports.paginationMovie = (req, res, next) => {
@@ -158,4 +196,37 @@ module.exports.deleteMovieById = (req, res, next) => {
     })
     .then(() => res.status(200).json({ message: "delete successfully" }))
     .catch((err) => res.status(500).json({ message: err.message }));
+};
+
+module.exports.getInforSchedule = (req, res, next) => {
+  return Movie.find()
+    .populate("heThongRapChieu")
+    .then((movies) => {
+      return res.status(200).json(movies);
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
+};
+
+module.exports.getMovieInfor = (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  return Movie.findById(id)
+    .populate({
+      path: "lstLichChieuTheoPhim",
+      populate: {
+        path: "thongTinRap",
+        populate: {
+          path: "listCumRap",
+          // select ({maHeThongRap,tenCumRap,DiaChi })
+        },
+      },
+    })
+    .then((movies) => {
+      return res.status(200).json(movies);
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
 };

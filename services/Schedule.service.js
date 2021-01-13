@@ -1,12 +1,14 @@
 const { ScheduleList } = require("../models/Schedule.modal");
 const { Movie } = require("../models/ListMovie.modal");
 module.exports.createSchedule = (req, res, next) => {
-  const { movieId, ngayChieuGioChieu, maRap, giaVe } = req.body;
+  const { movieId, ngayChieuGioChieu, maRap, giaVe, thongTinRap } = req.body;
   const newSchedule = new ScheduleList({
     ngayChieuGioChieu,
     maRap,
     giaVe,
+    thongTinRap,
   });
+
   Movie.findById(movieId)
     .then((movie) => {
       if (!movie)
@@ -16,7 +18,6 @@ module.exports.createSchedule = (req, res, next) => {
       return Promise.all([newSchedule.save(), movie.save()]);
     })
     .then((result) => {
-      console.log(result);
       return res.status(200).json(result[0]);
     })
     .catch((err) => res.status(500).json(err));

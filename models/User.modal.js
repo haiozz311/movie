@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const UserSchema = mongoose.Schema({
-  email: { type: String, required: true },
+  taiKhoan: { type: String, required: true },
   matKhau: { type: String, required: true },
+  email: { type: String, required: true },
   hoTen: { type: String, required: true },
   soDt: { type: String, required: true },
   maLoaiNguoiDung: { type: String, default: "KhachHang" },
-  avatarUrl: { type: String },
+  thongTinDatVe: [{ type: mongoose.Schema.Types.ObjectId, ref: "Ticket" }],
 });
 
-// console.log("StationSchema",StationSchema);
 UserSchema.pre("save", function (next) {
   console.log("pre save", this);
   const user = this;

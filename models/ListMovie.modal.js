@@ -5,14 +5,19 @@ const MovieSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: "ScheduleList",
     },
-  ], //đúngđúng
+  ],
+  heThongRapChieu: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "SystemCenima" },
+  ],
   tenPhim: { type: String, required: true },
   biDanh: { type: String, required: true },
   trailer: { type: String, required: true },
   hinhAnh: { type: String, required: true },
   moTa: { type: String, required: true },
-  ngayKhoiChieu: { type: Date, default: Date.now },
+  ngayKhoiChieu: { type: Date },
   danhGia: { type: Number, required: true },
+  ngayChieu: { type: Date },
+  gioChieu: { type: Date },
 });
 
 // console.log("StationSchema",StationSchema);
